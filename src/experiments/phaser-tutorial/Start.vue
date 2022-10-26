@@ -11,13 +11,24 @@
       </Select>
     </div>
 
+    <div>
+      <Select label="Bomb type" v-model="bombType">
+        <SelectOption :data-value="'bomb'" :selected="bombType == 'bomb'">Normal
+        </SelectOption>
+        <SelectOption :data-value="'google'" :selected="bombType == 'google'">Google
+        </SelectOption>
+        <SelectOption :data-value="'dude'" :selected="bombType == 'dude'">Dude
+        </SelectOption>
+      </Select>
+    </div>
+
     <Button @click="goToPhaserGame">Start</Button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Button from "@/core/buttons/Button.vue"
-import { playerCount } from "@/experiments/phaser-tutorial"
+import { playerCount, bombType } from "@/experiments/phaser-tutorial"
 import { useRouter } from "vue-router";
 import Select from "@/core/selects/OutlinedSelect.vue"
 import SelectOption from "@/core/selects/SelectOption.vue"

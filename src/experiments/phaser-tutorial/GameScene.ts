@@ -1,4 +1,4 @@
-import { playerCount } from "@/experiments/phaser-tutorial"
+import { playerCount, bombType } from "@/experiments/phaser-tutorial"
 import { ref } from "vue"
 
 export const platforms = ref<Phaser.Physics.Arcade.StaticGroup | null>(null)
@@ -31,6 +31,7 @@ export class Scene extends Phaser.Scene {
         )
         this.load.image("star", "/images/experiments/phaser-tutorial/star.png")
         this.load.image("bomb", "/images/experiments/phaser-tutorial/bomb.png")
+        this.load.image("google", "https://icon.horse/icon/google.com?size=small")
         this.load.spritesheet(
             "dude",
             "/images/experiments/phaser-tutorial/dude.png",
@@ -166,7 +167,7 @@ export class Scene extends Phaser.Scene {
                         ? Phaser.Math.Between(400, 800)
                         : Phaser.Math.Between(0, 400)
 
-                var bomb = bombs.value?.create(x, 16, "bomb")
+                var bomb = bombs.value?.create(x, 16, bombType.value)
                 bomb.setBounce(1)
                 bomb.setCollideWorldBounds(true)
                 bomb.setVelocity(Phaser.Math.Between(-200, 200), 20)
