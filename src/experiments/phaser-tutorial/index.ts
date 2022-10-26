@@ -1,3 +1,3 @@
-import { ref } from "vue";
+import { useLocalStorage } from "@vueuse/core"
 
-export const playerCount = ref<number>(1)
+export const playerCount = useLocalStorage<number>('phaser-player-count', 1)

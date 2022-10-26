@@ -11,15 +11,21 @@
       </Select>
     </div>
 
-    <RouterLink :to="{ name: 'phaser-tutorial-game' }">
-      <Button>Start</Button>
-    </RouterLink>
+    <Button @click="goToPhaserGame">Start</Button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Button from "@/core/buttons/Button.vue"
 import { playerCount } from "@/experiments/phaser-tutorial"
-import Select from "../../core/selects/OutlinedSelect.vue"
-import SelectOption from "../../core/selects/SelectOption.vue"
+import { useRouter } from "vue-router";
+import Select from "@/core/selects/OutlinedSelect.vue"
+import SelectOption from "@/core/selects/SelectOption.vue"
+
+const router = useRouter()
+
+async function goToPhaserGame() {
+  await router.push({ name: 'phaser-tutorial-game' })
+  location.reload()
+}
 </script>
