@@ -6,8 +6,8 @@
 
     <div>
       <Select label="Players" v-model="playerCount">
-        <SelectOption :data-value="1">1 player</SelectOption>
-        <SelectOption :data-value="2">2 players</SelectOption>
+        <SelectOption :data-value="1" :selected="playerCount == 1">1 player</SelectOption>
+        <SelectOption :data-value="2" :selected="playerCount == 2">2 players</SelectOption>
       </Select>
     </div>
 
