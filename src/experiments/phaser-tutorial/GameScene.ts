@@ -1,4 +1,4 @@
-import { playerCount, bombType } from "@/experiments/phaser-tutorial"
+import { playerCount, bombType, canDoubleJump, canBodySlam } from "@/experiments/phaser-tutorial"
 import { ref } from "vue"
 
 export const platforms = ref<Phaser.Physics.Arcade.StaticGroup | null>(null)
@@ -183,12 +183,14 @@ export class Scene extends Phaser.Scene {
                 right: cursors.value?.right.isDown,
                 up: cursors.value?.up.isDown,
                 down: cursors.value?.down.isDown,
+                upKey: 'UP'
             },
             {
                 left: a.value?.isDown,
                 right: d.value?.isDown,
                 up: w.value?.isDown,
                 down: s.value?.isDown,
+                upKey: 'W'
             },
         ]
         for (let i = 0; i < players.value.length; i++) {
@@ -208,13 +210,21 @@ export class Scene extends Phaser.Scene {
                 player.anims.play("turn")
             }
 
+            if (player.body.touching.down) player.setData('canDoubleJump', canDoubleJump.value)
+
             if (control.up && player.body.touching.down) {
                 player.setVelocityY(-330)
+                this.input.keyboard.once(`keydown-${control.upKey}`, () => {
+                    if (player.getData('canDoubleJump')) {
+                        player.setVelocityY(-330)
+                        player.setData('canDoubleJump', false)
+                    }
+                })
+            }
+
+            if (canBodySlam.value && control.down && !player.body.touching.down) {
+                player.setVelocityY(player.body.velocity.y + 30)
             }
         }
-    }
-
-    disableClashingInput() {
-        this.input.keyboard.enabled = false
     }
 }

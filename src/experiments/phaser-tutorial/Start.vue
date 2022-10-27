@@ -19,16 +19,25 @@
       </Select>
     </div>
 
+    <div>
+      <MdcSwitch v-model="canDoubleJump" label="Allow double jumping" />
+    </div>
+
+    <div>
+      <MdcSwitch v-model="canBodySlam" label="Allow body slamming" />
+    </div>
+
     <Button @click="goToPhaserGame">Start</Button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Button from "@/core/buttons/Button.vue"
-import { playerCount, bombType } from "@/experiments/phaser-tutorial"
+import { playerCount, bombType, canDoubleJump, canBodySlam } from "@/experiments/phaser-tutorial"
 import { useRouter } from "vue-router";
 import Select from "@/core/selects/OutlinedSelect.vue"
 import SelectOption from "@/core/selects/SelectOption.vue"
+import MdcSwitch from "@/core/switches/MdcSwitch.vue"
 
 const router = useRouter()
 
