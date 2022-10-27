@@ -6,19 +6,16 @@
 
     <div>
       <Select label="Players" v-model="playerCount">
-        <SelectOption :data-value="1" :selected="playerCount == 1">1 player</SelectOption>
-        <SelectOption :data-value="2" :selected="playerCount == 2">2 players</SelectOption>
+        <SelectOption :model-value="1">1 player</SelectOption>
+        <SelectOption :model-value="2">2 players</SelectOption>
       </Select>
     </div>
 
     <div>
       <Select label="Bomb type" v-model="bombType">
-        <SelectOption :data-value="'bomb'" :selected="bombType == 'bomb'">Normal
-        </SelectOption>
-        <SelectOption :data-value="'google'" :selected="bombType == 'google'">Google
-        </SelectOption>
-        <SelectOption :data-value="'dude'" :selected="bombType == 'dude'">Dude
-        </SelectOption>
+        <SelectOption :model-value="'bomb'">Normal</SelectOption>
+        <SelectOption :model-value="'google'">Google</SelectOption>
+        <SelectOption :model-value="'dude'">Dude</SelectOption>
       </Select>
     </div>
 
