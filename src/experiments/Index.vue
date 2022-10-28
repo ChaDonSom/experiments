@@ -1,8 +1,8 @@
 <template>
-  <div class="m-10">
+  <div class="m-10" ref="mainRef">
     <h1 class="text-lg my-5">Experiments</h1>
     <div class="flex flex-wrap gap-10">
-      <RouterLink :to="{ name: 'phaser-tutorial-start' }" @click="loading = true">
+      <RouterLink :to="{ name: 'phaser-tutorial-start' }" @click="loading = true" class="mdc-ripple overflow-hidden">
         <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
           <div class="inline-flex w-12 h-12 items-center justify-center">
             <img class="object-cover w-6 h-8" src="/images/experiments/phaser-tutorial/dude.png" />
@@ -17,9 +17,31 @@
 
 <script lang="ts" setup>
 import CircularScrim from '@/core/loaders/CircularScrim.vue'
-import { provide, ref } from 'vue';
+import { MDCRipple } from '@material/ripple';
+import { provide, ref, watch } from 'vue';
 
 const loading = ref(false)
 
 provide('loading', loading)
+
+const mainRef = ref<HTMLElement|null>(null)
+watch(
+  () => mainRef.value,
+  () => {
+    if (mainRef.value) {
+      let ripples = mainRef.value.querySelectorAll('.mdc-ripple')
+      ripples.forEach(ripple => new MDCRipple(ripple))
+    }
+  }
+)
 </script>
+
+<style lang="scss" scoped>
+@use "@material/ripple";
+
+.mdc-ripple {
+  @include ripple.surface;
+  @include ripple.radius-bounded;
+  @include ripple.states;
+}
+</style>
