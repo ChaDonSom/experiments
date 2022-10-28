@@ -38,10 +38,13 @@ import { useRouter } from "vue-router";
 import Select from "@/core/selects/OutlinedSelect.vue"
 import SelectOption from "@/core/selects/SelectOption.vue"
 import MdcSwitch from "@/core/switches/MdcSwitch.vue"
+import { inject, type Ref } from "vue";
 
 const router = useRouter()
 
+const loading = inject('loading') as Ref<boolean>
 async function goToPhaserGame() {
+  loading.value = true
   await router.push({ name: 'phaser-tutorial-game' })
   location.reload()
 }
