@@ -1,4 +1,5 @@
-import { playerCount, bombType, canDoubleJump, canBodySlam } from "@/experiments/phaser-tutorial"
+import Phaser from "phaser"
+import { playerCount, bombType, canDoubleJump, canBodySlam, highScoreLocalStorageKey, highScores } from "@/experiments/phaser-tutorial"
 import { ref } from "vue"
 
 export const platforms = ref<Phaser.Physics.Arcade.StaticGroup | null>(null)
@@ -23,7 +24,6 @@ export class Scene extends Phaser.Scene {
     }
 
     preload() {
-        console.log("preload")
         this.load.image("sky", "/images/experiments/phaser-tutorial/sky.png")
         this.load.image(
             "ground",
@@ -41,7 +41,7 @@ export class Scene extends Phaser.Scene {
     create() {
         this.add.image(400, 300, "sky")
 
-        scoreText.value = this.add.text(16, 16, "score: 0", {
+        scoreText.value = this.add.text(16, 16, "Score: 0", {
             fontSize: "32px" /*  fill: '#000' */,
         })
 
@@ -114,8 +114,9 @@ export class Scene extends Phaser.Scene {
             player.anims.play("turn")
             gameOver.value = true
             this.add.text(100, 300, "Game over: hit any key to restart", {
-                fontSize: "32px" /*  fill: '#000' */,
+                fontSize: "28px" /*  fill: '#000' */,
             })
+            this.add.text(200, 350, "High score: " + highScores.value[highScoreLocalStorageKey.value])
             const restart = () => {
                 location.reload()
             }
@@ -155,6 +156,12 @@ export class Scene extends Phaser.Scene {
             star.disableBody(true, true)
             score.value += 1
             scoreText.value?.setText("Score: " + score.value)
+            if (score.value > highScores.value[highScoreLocalStorageKey.value]) {
+                highScores.value = {
+                    ...highScores.value,
+                    [highScoreLocalStorageKey.value]: score.value
+                }
+            }
 
             if (stars.value?.countActive(true) === 0) {
                 stars.value.children.iterate(function (child) {

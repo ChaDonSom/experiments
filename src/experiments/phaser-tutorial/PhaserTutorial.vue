@@ -9,9 +9,11 @@
 import { useRoute, useRouter } from 'vue-router';
 import CircularScrim from '@/core/loaders/CircularScrim.vue';
 import { onMounted, provide, ref } from 'vue';
+import { usePhaserTutorial } from '@/experiments/phaser-tutorial';
 
 const route = useRoute()
 const router = useRouter()
+const phaserTutorialStore = usePhaserTutorial()
 
 if (route.matched.length == 1) router.replace({ name: 'phaser-tutorial-start' })
 

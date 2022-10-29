@@ -58,3 +58,16 @@ Route::get('/sites', function (Request $request) {
     ]);
     return $res->getBody();
 });
+
+Route::get('/phaser-tutorial/leaderboard', function (Request $request) {
+    return [
+        'rows' => [
+            [
+                'players' => 1,
+                'bomb_type' => 'normal',
+                'allow_double_jump' => false,
+                'allow_body_slam' => true,
+            ]
+        ]
+    ];
+});
