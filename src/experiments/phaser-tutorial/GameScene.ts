@@ -11,6 +11,7 @@ export const players = ref<Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[]>(
 export const stars = ref<Phaser.Physics.Arcade.Group | null>(null)
 export const score = ref(0)
 export const scoreText = ref<Phaser.GameObjects.Text | null>(null)
+export const highScoreText = ref<Phaser.GameObjects.Text | null>(null)
 export const bombs = ref<Phaser.Physics.Arcade.Group | null>(null)
 export const gameOver = ref(false)
 export const w = ref<Phaser.Input.Keyboard.Key | null>(null)
@@ -44,6 +45,15 @@ export class Scene extends Phaser.Scene {
         scoreText.value = this.add.text(16, 16, "Score: 0", {
             fontSize: "32px" /*  fill: '#000' */,
         })
+
+        highScoreText.value = this.add.text(
+            200,
+            16,
+            "High score: " + (highScores.value[highScoreLocalStorageKey.value] ?? 0),
+            {
+                fontSize: "32px" /*  fill: '#000' */,
+            }
+        )
 
         platforms.value = this.physics.add.staticGroup()
 
@@ -156,12 +166,13 @@ export class Scene extends Phaser.Scene {
             star.disableBody(true, true)
             score.value += 1
             scoreText.value?.setText("Score: " + score.value)
-            if (score.value > highScores.value[highScoreLocalStorageKey.value]) {
+            if (score.value > (highScores.value[highScoreLocalStorageKey.value] ?? 0)) {
                 highScores.value = {
                     ...highScores.value,
                     [highScoreLocalStorageKey.value]: score.value
                 }
             }
+            highScoreText.value?.setText("High score: " + highScores.value[highScoreLocalStorageKey.value])
 
             if (stars.value?.countActive(true) === 0) {
                 stars.value.children.iterate(function (child) {
