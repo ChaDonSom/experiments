@@ -121,6 +121,6 @@ onBeforeUnmount(() => {
   emitter.off('drag-ended', onDragEnded)
 })
 
-provide('row', toRef(props.row))
-provide('col', toRef(props.col))
+provide('row', toRef(props, 'row'))
+provide('col', toRef(props, 'col'))
 </script>
