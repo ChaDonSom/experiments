@@ -2,19 +2,21 @@
   <div
       ref="mainRef"
       :class="{
-        'bg-stone-500 z-10': thisIsPossibleSpace,
+        'bg-stone-500': thisIsPossibleSpace,
         'bg-stone-300': !thisIsPossibleSpace,
         'bg-stone-400': (isDragging ? (checkersSettings.highlightMovesWhileDragging && thisIsAvailableSpaceForDrag) : (checkersSettings.highlightMoves && availableSpaces.includes(id)))
       }"
       class="border border-stone-600 flex items-center justify-center"
       style="width: 12.5%; height: 100%;"
+      :data-id="id"
   >
     <slot v-if="thisIsPossibleSpace"></slot>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove } from '@/experiments/checkers'
+import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove, score } from '@/experiments/checkers'
+import { placeBetweenPlaces } from "@/experiments/checkers/board"
 import { computed, ref, watch, provide, toRef, onBeforeUnmount } from 'vue'
 import Sortable from 'sortablejs'
 
@@ -47,7 +49,7 @@ type DragStarted = {
 }
 const sortable = ref<Sortable|null>(null)
 watch(
-  () => [mainRef.value, spacesThatCanMove.value[id.value]],
+  () => [mainRef.value, spacesThatCanMove.value[id.value], checkersSettings.value.running],
   () => {
     if (mainRef.value) {
       if (sortable.value) sortable.value.destroy()
@@ -57,9 +59,11 @@ watch(
           pull: () => !!spacesThatCanMove.value[id.value],
           put: () => thisIsAvailableSpaceForDrag.value
         },
-        animation: 200,
-        disabled: piecesCurrentPlaces.value[id.value] && !spacesThatCanMove.value[id.value],
+        animation: 350,
+        disabled: !checkersSettings.value.running
+          || (piecesCurrentPlaces.value[id.value] && !spacesThatCanMove.value[id.value]),
         onStart(event) {
+          event.item.style.zIndex = '10'
           let player = event.item.dataset.player
           let availableMoves = spacesThatCanMove.value[id.value]
           emitter.emit('drag-started', {
@@ -74,6 +78,16 @@ watch(
           emitter.emit('drag-ended')
         },
         onAdd(event) {
+          let previousSpace = event.from.dataset.id
+          if (!previousSpace) return
+          let prevExploded = previousSpace.split('').map(i => Number(i))
+          let nextExploded = id.value.split('').map(i => Number(i))
+          let isMoreThanOneJump = Math.abs(nextExploded[0] - prevExploded[0]) > 1 && Math.abs(nextExploded[1] - prevExploded[1]) > 1
+          if (isMoreThanOneJump) {
+            let placeBetween = placeBetweenPlaces(previousSpace, id.value)
+            delete piecesCurrentPlaces.value[placeBetween]
+            score.value[checkersSettings.value.activePlayer]++
+          }
           piecesCurrentPlaces.value[id.value] = event.item.dataset.pieceId
           checkersSettings.value.activePlayer = checkersSettings.value.activePlayer == 'black' ? 'red' : 'black'
         },

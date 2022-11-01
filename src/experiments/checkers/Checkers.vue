@@ -23,8 +23,9 @@
       </div>
     </div>
 
-    <div v-if="checkersSettings.activePlayer == 'black'" class="fixed top-3 left-2" v-tooltip="`Black's turn`">
-      <IconButton>expand_less</IconButton>
+    <div class="fixed top-3 left-2 flex items-center">
+      {{ score.black }}
+      <IconButton v-if="checkersSettings.activePlayer == 'black'" v-tooltip="`Black's turn`">expand_less</IconButton>
     </div>
 
     <div
@@ -42,14 +43,15 @@
       <IconButton @click="resetGame">replay</IconButton>
     </div>
 
-    <div v-if="checkersSettings.activePlayer == 'red'" class="fixed bottom-3 left-2" v-tooltip="`Red's turn`">
-      <IconButton>expand_more</IconButton>
+    <div class="fixed bottom-3 left-2 flex items-center">
+      {{ score.red }}
+      <IconButton v-if="checkersSettings.activePlayer == 'red'" v-tooltip="`Red's turn`">expand_more</IconButton>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { board, useBoard, piecesCurrentPlaces, resetGame, useBoardStore, spacesThatCanMove } from "@/experiments/checkers"
+import { board, useBoard, piecesCurrentPlaces, resetGame, useBoardStore, spacesThatCanMove, score } from "@/experiments/checkers"
 import { computed, markRaw, provide, ref } from "vue"
 import Piece from "./Piece.vue"
 import Square from "./Square.vue"

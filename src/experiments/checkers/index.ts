@@ -1,3 +1,4 @@
+import { getNumbersFromPlace, placeContinuingInLine } from "@/experiments/checkers/board"
 import { useElementBounding, useLocalStorage } from "@vueuse/core"
 import { defineStore } from "pinia"
 import { TinyEmitter } from "tiny-emitter"
@@ -44,14 +45,13 @@ export const spacesThatCanMove = computed(() => {
                     }
                     let optionPlayer = playerForPieceId(optionOccupied)
                     if (optionPlayer == player) continue
-                    let rowBeyondJump = index + ((rowOption - index) * 2)
-                    let colBeyondJump = col   + ((colOption - col)   * 2)
+                    let placeBeyondJump = placeContinuingInLine(`${index}${col}`, `${rowOption}${colOption}`)
+                    let [rowBeyondJump, colBeyondJump] = getNumbersFromPlace(placeBeyondJump)
                     if (rowBeyondJump >= board.value.length || rowBeyondJump < 0) continue
                     if (colBeyondJump >= board.value[0].length || colBeyondJump < 0) continue
-                    let spaceBeyondJump = `${rowBeyondJump}${colBeyondJump}`
-                    let beyondJumpOptionOccupied = piecesCurrentPlaces.value[spaceBeyondJump]
+                    let beyondJumpOptionOccupied = piecesCurrentPlaces.value[placeBeyondJump]
                     if (!beyondJumpOptionOccupied) {
-                        moveOptions.push(spaceBeyondJump)
+                        moveOptions.push(placeBeyondJump)
                         continue
                     }
                 }
@@ -94,6 +94,8 @@ export function playerForPieceId(id: string): 'red'|'black' {
 export function resetGame() {
     piecesCurrentPlaces.value = JSON.parse(JSON.stringify(piecesStartingPlaces.value))
     checkersSettings.value.activePlayer = 'black'
+    score.value.black = 0
+    score.value.red = 0
 }
 
 export const checkersSettings = useLocalStorage('checkers-settings-v4', {
@@ -105,6 +107,11 @@ export const checkersSettings = useLocalStorage('checkers-settings-v4', {
     highlightMoves: false,
     highlightMovesWhileDragging: true,
     highlightPieces: false,
+})
+
+export const score = useLocalStorage('experiments-checkers-score-v1', {
+    black: 0,
+    red: 0
 })
 
 export function useBoard(boardRef: Ref<HTMLElement|null>) {
@@ -139,4 +146,5 @@ export const useBoardStore = defineStore('board', () => ({
     piecesCurrentPlaces,
     checkersSettings,
     availableSpaces,
+    score,
 }))
