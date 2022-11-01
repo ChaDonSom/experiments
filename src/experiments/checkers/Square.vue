@@ -2,7 +2,7 @@
   <div
       ref="mainRef"
       :class="{
-        'bg-stone-500': thisIsPossibleSpace,
+        'bg-stone-500 z-10': thisIsPossibleSpace,
         'bg-stone-300': !thisIsPossibleSpace,
         'bg-stone-400': (isDragging ? (checkersSettings.highlightMovesWhileDragging && thisIsAvailableSpaceForDrag) : (checkersSettings.highlightMoves && availableSpaces.includes(id)))
       }"
@@ -43,8 +43,7 @@ type DragStarted = {
   row: number,
   col: number,
   pieceId: string,
-  availableRows: number[],
-  availableCols: number[]
+  availableMoves: string[],
 }
 const sortable = ref<Sortable|null>(null)
 watch(
@@ -53,39 +52,45 @@ watch(
     if (mainRef.value) {
       if (sortable.value) sortable.value.destroy()
       sortable.value = new Sortable(mainRef.value, {
-        disabled: !spacesThatCanMove.value[id.value],
+        group: {
+          name: "pieces",
+          pull: () => !!spacesThatCanMove.value[id.value],
+          put: () => thisIsAvailableSpaceForDrag.value
+        },
+        animation: 200,
+        disabled: piecesCurrentPlaces.value[id.value] && !spacesThatCanMove.value[id.value],
         onStart(event) {
           let player = event.item.dataset.player
-          let availableRows = [(player == 'black' ? props.row + 1 : props.row - 1)]
-          // if king, [props.row + 1, props.row - 1]
-          let availableCols = [props.col - 1, props.col + 1] // diagonal move - regardless of player or king
+          let availableMoves = spacesThatCanMove.value[id.value]
           emitter.emit('drag-started', {
             row: props.row,
             col: props.col,
             pieceId: event.item.dataset.pieceId,
-            player: event.item.dataset.player,
-            availableRows,
-            availableCols,
-          })
+            player,
+            availableMoves,
+          } as DragStarted)
         },
         onEnd(event) {
           emitter.emit('drag-ended')
+        },
+        onAdd(event) {
+          piecesCurrentPlaces.value[id.value] = event.item.dataset.pieceId
+          checkersSettings.value.activePlayer = checkersSettings.value.activePlayer == 'black' ? 'red' : 'black'
+        },
+        onRemove(event) {
+          delete piecesCurrentPlaces.value[id.value]
         }
       })
     }
   },
-  { deep: true }
+  { deep: true, immediate: true }
 )
 
 const isDragging = ref(false)
 const thisIsAvailableSpaceForDrag = ref(false)
 function onDragStarted(payload: DragStarted) {
   isDragging.value = true
-  if (
-    payload.availableRows.includes(props.row)
-    && payload.availableCols.includes(props.col)
-    && !piecesCurrentPlaces.value[id.value]
-  ) {
+  if (payload.availableMoves.includes(id.value)) {
     thisIsAvailableSpaceForDrag.value = true
   } else {
     thisIsAvailableSpaceForDrag.value = false

@@ -93,6 +93,7 @@ export function playerForPieceId(id: string): 'red'|'black' {
 
 export function resetGame() {
     piecesCurrentPlaces.value = JSON.parse(JSON.stringify(piecesStartingPlaces.value))
+    checkersSettings.value.activePlayer = 'black'
 }
 
 export const checkersSettings = useLocalStorage('checkers-settings-v4', {
