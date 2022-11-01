@@ -30,7 +30,7 @@ export const spacesThatCanMove = computed(() => {
             if (player != checkersSettings.value.activePlayer) return acc
             let advance = player == 'black' ? +1 : -1 // if occupied == king, advance can be both
             let availableRows = [index + advance]
-            if (false /* king */) availableRows.push(index - advance)
+            if (piecesThatAreKings.value[occupied]) availableRows.push(index - advance)
             let availableCols = [col + 1, col - 1]
             let moveOptions = []
             for (let rowOption of availableRows) {
@@ -86,6 +86,10 @@ export const piecesCurrentPlaces = useLocalStorage(
     'checkers-current-places',
     JSON.parse(JSON.stringify(piecesStartingPlaces.value))
 )
+
+export const piecesThatAreKings = useLocalStorage('experiments-checkers-king-pieces-v1', {
+
+} as { [key: string]: true })
 
 export function playerForPieceId(id: string): 'red'|'black' {
     return Number(id[0]) <= 2 ? 'black' : 'red'
@@ -147,4 +151,5 @@ export const useBoardStore = defineStore('board', () => ({
     checkersSettings,
     availableSpaces,
     score,
+    piecesThatAreKings,
 }))

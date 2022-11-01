@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove, score } from '@/experiments/checkers'
+import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove, score, piecesThatAreKings } from '@/experiments/checkers'
 import { placeBetweenPlaces } from "@/experiments/checkers/board"
 import { computed, ref, watch, provide, toRef, onBeforeUnmount } from 'vue'
 import Sortable from 'sortablejs'
@@ -88,7 +88,19 @@ watch(
             delete piecesCurrentPlaces.value[placeBetween]
             score.value[checkersSettings.value.activePlayer]++
           }
-          piecesCurrentPlaces.value[id.value] = event.item.dataset.pieceId
+
+          let pieceId = event.item.dataset.pieceId
+          piecesCurrentPlaces.value[id.value] = pieceId
+          // Make king
+          if (pieceId
+            && (
+              (id.value[0] == '0' && checkersSettings.value.activePlayer == 'red')
+                || (id.value[0] == '7' && checkersSettings.value.activePlayer == 'black')
+            )
+          ) {
+            piecesThatAreKings.value[pieceId] = true
+          }
+          
           checkersSettings.value.activePlayer = checkersSettings.value.activePlayer == 'black' ? 'red' : 'black'
         },
         onRemove(event) {
