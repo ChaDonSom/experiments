@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from "vue-router";
 const GameVue = () => import("@/experiments/phaser-tutorial/Game.vue")
 const StartVue = () => import("@/experiments/phaser-tutorial/Start.vue")
 const PhaserTutorial = () => import("@/experiments/phaser-tutorial/PhaserTutorial.vue")
+const Checkers = () => import("@/experiments/checkers/Checkers.vue")
 
 const routes: RouteRecordRaw[] = [
     {
@@ -15,6 +16,12 @@ const routes: RouteRecordRaw[] = [
             }
         ]
     },
+    {
+        name: "checkers", path: "/checkers", component: Checkers, props: true,
+        children: [
+            
+        ]
+    }
 ];
 
 export default routes;

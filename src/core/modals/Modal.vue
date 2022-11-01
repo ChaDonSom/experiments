@@ -90,7 +90,8 @@ watch(
     margin: 0px auto;
     padding-left: 30px;
     padding-right: 30px;
-    border-width: 0px;border-style: solid;
+    border-width: 0px;
+    border-style: solid;
     border-top: 20px solid var(--color-background-soft);
     border-bottom: 20px solid var(--color-background-soft);
     background-color: var(--color-background-soft);

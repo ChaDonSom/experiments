@@ -51,6 +51,7 @@
     },
     "dependencies": {
         "@pusher/push-notifications-web": "^1.1.0",
+        "@types/sortablejs": "^1.15.0",
         "@vueuse/core": "^7.5.5",
         "@vueuse/head": "^0.7.9",
         "concurrently": "^7.0.0",
@@ -60,6 +61,8 @@
         "material-components-web": "^14.0.0",
         "phaser": "^3.55.2",
         "pinia": "^2.0.17",
+        "sortablejs": "^1.15.0",
+        "tiny-emitter": "^2.1.0",
         "vue": "^3.2.37",
         "vue-flatpickr-component": "^9.0.6",
         "vue-router": "^4.0.12"
