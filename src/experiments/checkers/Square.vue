@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces } from '@/experiments/checkers'
+import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove } from '@/experiments/checkers'
 import { computed, ref, watch, provide, toRef, onBeforeUnmount } from 'vue'
 import Sortable from 'sortablejs'
 
@@ -48,12 +48,12 @@ type DragStarted = {
 }
 const sortable = ref<Sortable|null>(null)
 watch(
-  () => [mainRef.value, piecesCurrentPlaces.value[id.value]],
+  () => [mainRef.value, spacesThatCanMove.value[id.value]],
   () => {
     if (mainRef.value) {
       if (sortable.value) sortable.value.destroy()
       sortable.value = new Sortable(mainRef.value, {
-        disabled: piecesCurrentPlaces.value[id.value] && playerForPieceId(piecesCurrentPlaces.value[id.value]) != checkersSettings.value.activePlayer,
+        disabled: !spacesThatCanMove.value[id.value],
         onStart(event) {
           let player = event.item.dataset.player
           let availableRows = [(player == 'black' ? props.row + 1 : props.row - 1)]
