@@ -1,8 +1,10 @@
 import { getNumbersFromPlace, placeContinuingInLine } from "@/experiments/checkers/board"
+import { useModals } from "@/store/modals"
 import { useElementBounding, useLocalStorage } from "@vueuse/core"
 import { defineStore } from "pinia"
 import { TinyEmitter } from "tiny-emitter"
-import { computed, ref, type Ref } from "vue"
+import { computed, markRaw, ref, watch, type Ref } from "vue"
+import WinModal from "@/experiments/checkers/modals/WinModal.vue"
 
 export const board = ref([
     [0, 1, 2, 3, 4, 5, 6, 7],
@@ -95,17 +97,25 @@ export function playerForPieceId(id: string): 'red'|'black' {
     return Number(id[0]) <= 2 ? 'black' : 'red'
 }
 
-export function resetGame() {
+export async function resetGame() {
+    const modals = useModals()
+    try {
+        await modals.confirm("Are you sure?")
+    } catch {
+        return
+    }
     piecesCurrentPlaces.value = JSON.parse(JSON.stringify(piecesStartingPlaces.value))
+    piecesThatAreKings.value = {}
     checkersSettings.value.activePlayer = 'black'
     score.value.black = 0
     score.value.red = 0
 }
 
-export const checkersSettings = useLocalStorage('checkers-settings-v4', {
+export const checkersSettings = useLocalStorage('checkers-settings-v5', {
     running: true,
     activePlayer: 'black' as 'red'|'black',
     forceJumps: false,
+    allowMultipleJumps: false,
     forceCommits: false,
     clickMode: false,
     highlightMoves: false,
@@ -117,6 +127,22 @@ export const score = useLocalStorage('experiments-checkers-score-v1', {
     black: 0,
     red: 0
 })
+
+export const winning = computed(() => {
+    if (score.value.black > score.value.red) return 'black'
+    if (score.value.red > score.value.black) return 'red'
+})
+
+watch(
+    () => spacesThatCanMove.value,
+    () => {
+        if (!Object.keys(spacesThatCanMove.value).length) {
+            const modals = useModals()    
+            modals.open({ modal: markRaw(WinModal) })
+        }
+    },
+    { immediate: true }
+)
 
 export function useBoard(boardRef: Ref<HTMLElement|null>) {
     const {
