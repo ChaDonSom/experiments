@@ -1,9 +1,13 @@
-export function placeContinuingInLine(place1: string, place2: string): string {
+import { board } from "@/experiments/checkers"
+
+export function placeContinuingInLine(place1: string, place2: string): string|null {
     let [row1, col1] = getNumbersFromPlace(place1)
     let [row2, col2] = getNumbersFromPlace(place2)
     if (Math.abs(row2 - row1) != 1 || Math.abs(col2 - col1) != 1) throw Error("Places must be diagonally adjacent")
     let rowBeyondJump = row1 + ((row2 - row1) * 2)
     let colBeyondJump = col1 + ((col2 - col1) * 2)
+    if (rowBeyondJump >= board.value.length || rowBeyondJump < 0) return null
+    if (colBeyondJump >= board.value[0].length || colBeyondJump < 0) return null
     return `${rowBeyondJump}${colBeyondJump}`
 }
 

@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove, score, piecesThatAreKings } from '@/experiments/checkers'
-import { placeBetweenPlaces } from "@/experiments/checkers/board"
+import { isPossibleSpace, emitter, piecesCurrentPlaces, checkersSettings, playerForPieceId, availableSpaces, spacesThatCanMove, score, piecesThatAreKings, spacesThatCanJump } from '@/experiments/checkers'
+import { getNumbersFromPlace, placeBetweenPlaces } from "@/experiments/checkers/board"
 import { computed, ref, watch, provide, toRef, onBeforeUnmount } from 'vue'
 import Sortable from 'sortablejs'
 
@@ -49,7 +49,7 @@ type DragStarted = {
 }
 const sortable = ref<Sortable|null>(null)
 watch(
-  () => [mainRef.value, spacesThatCanMove.value[id.value], checkersSettings.value.running],
+  () => [mainRef.value, spacesThatCanMove.value[id.value], checkersSettings.value],
   () => {
     if (mainRef.value) {
       if (sortable.value) sortable.value.destroy()
@@ -61,11 +61,12 @@ watch(
         },
         animation: 350,
         disabled: !checkersSettings.value.running
-          || (piecesCurrentPlaces.value[id.value] && !spacesThatCanMove.value[id.value]),
+          || (piecesCurrentPlaces.value[id.value] && !spacesThatCanMove.value[id.value])
+          || (piecesCurrentPlaces.value[id.value] && (checkersSettings.value.forceJumps && Object.keys(spacesThatCanJump.value).length) && !spacesThatCanMove.value[id.value].jumpOptions.length),
         onStart(event) {
           event.item.style.zIndex = '10'
           let player = event.item.dataset.player
-          let availableMoves = spacesThatCanMove.value[id.value]
+          let availableMoves = checkersSettings.value.forceJumps && spacesThatCanJump.value[id.value] ? spacesThatCanMove.value[id.value]?.jumpOptions : spacesThatCanMove.value[id.value]?.moveOptions
           emitter.emit('drag-started', {
             row: props.row,
             col: props.col,
@@ -80,8 +81,8 @@ watch(
         onAdd(event) {
           let previousSpace = event.from.dataset.id
           if (!previousSpace) return
-          let prevExploded = previousSpace.split('').map(i => Number(i))
-          let nextExploded = id.value.split('').map(i => Number(i))
+          let prevExploded = getNumbersFromPlace(previousSpace)
+          let nextExploded = getNumbersFromPlace(id.value)
           let isMoreThanOneJump = Math.abs(nextExploded[0] - prevExploded[0]) > 1 && Math.abs(nextExploded[1] - prevExploded[1]) > 1
           if (isMoreThanOneJump) {
             let placeBetween = placeBetweenPlaces(previousSpace, id.value)
@@ -100,6 +101,11 @@ watch(
           ) {
             piecesThatAreKings.value[pieceId] = true
           }
+
+          // If forceJumps && another jump is available, keep current player
+
+          // If not forceJumps, and allowMultipleJumps, and another jump is available... the game must hand the turn management over to the players
+          // Unless we count it by the 'onMove' of the sortables
           
           checkersSettings.value.activePlayer = checkersSettings.value.activePlayer == 'black' ? 'red' : 'black'
         },

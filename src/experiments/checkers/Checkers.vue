@@ -16,7 +16,7 @@
               :id="piecesCurrentPlaces[`${index}${column}`]"
               :color="piecesCurrentPlaces[`${index}${column}`][0] <= 2 ? 'black' : 'red'"
               :class="{
-                'brightness-150': (checkersSettings.highlightPieces && spacesThatCanMove[`${index}${column}`])
+                'brightness-150': (checkersSettings.highlightPieces && ((checkersSettings.forceJumps && Object.keys(spacesThatCanJump).length) ? spacesThatCanMove[`${index}${column}`]?.jumpOptions?.length : spacesThatCanMove[`${index}${column}`]))
               }"
           />
         </Square>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { board, useBoard, piecesCurrentPlaces, resetGame, useBoardStore, spacesThatCanMove, score } from "@/experiments/checkers"
+import { board, useBoard, piecesCurrentPlaces, resetGame, useBoardStore, spacesThatCanMove, spacesThatCanJump, score } from "@/experiments/checkers"
 import { computed, markRaw, provide, ref } from "vue"
 import Piece from "./Piece.vue"
 import Square from "./Square.vue"

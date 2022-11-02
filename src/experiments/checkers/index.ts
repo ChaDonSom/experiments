@@ -35,6 +35,7 @@ export const spacesThatCanMove = computed(() => {
             if (piecesThatAreKings.value[occupied]) availableRows.push(index - advance)
             let availableCols = [col + 1, col - 1]
             let moveOptions = []
+            let jumpOptions = []
             for (let rowOption of availableRows) {
                 for (let colOption of availableCols) {
                     let idOption = `${rowOption}${colOption}`
@@ -48,31 +49,41 @@ export const spacesThatCanMove = computed(() => {
                     let optionPlayer = playerForPieceId(optionOccupied)
                     if (optionPlayer == player) continue
                     let placeBeyondJump = placeContinuingInLine(`${index}${col}`, `${rowOption}${colOption}`)
+                    if (!placeBeyondJump) continue
                     let [rowBeyondJump, colBeyondJump] = getNumbersFromPlace(placeBeyondJump)
                     if (rowBeyondJump >= board.value.length || rowBeyondJump < 0) continue
                     if (colBeyondJump >= board.value[0].length || colBeyondJump < 0) continue
                     let beyondJumpOptionOccupied = piecesCurrentPlaces.value[placeBeyondJump]
                     if (!beyondJumpOptionOccupied) {
                         moveOptions.push(placeBeyondJump)
+                        jumpOptions.push(placeBeyondJump)
                         continue
                     }
                 }
             }
             if (moveOptions.length) {
-                acc[`${index}${col}`] = moveOptions
+                acc[`${index}${col}`] = { moveOptions, jumpOptions }
             }
             return acc
-        }, {} as { [key: string]: string[] })
+        }, {} as { [key: string]: { moveOptions: string[], jumpOptions: string[] } })
         acc = {
             ...acc,
             ...colsThatCanMove,
         }
         return acc
-    }, {} as { [key: string]: string[] })
+    }, {} as { [key: string]: { moveOptions: string[], jumpOptions: string[] } })
+})
+
+export const spacesThatCanJump = computed(() => {
+    let result = JSON.parse(JSON.stringify(spacesThatCanMove.value))
+    for (let key in result) {
+        if (!result[key].jumpOptions.length) delete result[key]
+    }
+    return result
 })
 
 export const availableSpaces = computed(() => {
-    return Object.values(spacesThatCanMove.value).flat().filter((value, index, self) => self.indexOf(value) == index)
+    return Object.values(spacesThatCanMove.value).map(i => (checkersSettings.value.forceJumps && Object.keys(spacesThatCanJump.value).length) ? i.jumpOptions : i.moveOptions).flat().filter((value, index, self) => self.indexOf(value) == index)
 })
 
 export const piecesStartingPlaces = ref({
@@ -178,4 +189,5 @@ export const useBoardStore = defineStore('board', () => ({
     availableSpaces,
     score,
     piecesThatAreKings,
+    spacesThatCanJump,
 }))
