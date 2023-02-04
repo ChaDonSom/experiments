@@ -5,7 +5,7 @@
           type="number"
           :model-value="numberOfCards / 2"
           @change:model-value="numberOfCards = Number($event) * 2"
-          autofocus
+          autoselect
       >
         Number of matches
       </OutlinedTextfield>
