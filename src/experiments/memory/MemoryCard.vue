@@ -7,12 +7,13 @@ import { useIconsStore } from '@/experiments/memory/icons'
 const props = defineProps({
   card: {
     type: Object as PropType<ReturnType<typeof Card>>,
-    required: true,
+    required: true, 
   }
 })
 
 const classes = computed(() => ({
-  "bg-blue-500": props.card.revealed && props.card.matched
+  "bg-blue-500": props.card.revealed && props.card.matched,
+  "bg-slate-300": !(props.card.revealed && props.card.matched)
 }))
 
 const icons = useIconsStore()
@@ -22,7 +23,7 @@ const icons = useIconsStore()
   <template v-if="card.inPlay">
     <div
         v-if="!card.revealed"
-        class="h-32 w-20 rounded-xl bg-slate-300 m-3 text-slate-900 flex items-center justify-center"
+        class="h-32 w-20 rounded-xl m-3 text-slate-900 flex items-center justify-center"
         :class="classes"
         @click="card.toggleRevealed"
         v-motion
@@ -38,7 +39,7 @@ const icons = useIconsStore()
     </div>
     <div
         v-else
-        class="h-32 w-20 rounded-xl bg-slate-300 m-3 text-slate-900 flex items-center justify-center"
+        class="h-32 w-20 rounded-xl m-3 text-slate-900 flex items-center justify-center"
         :class="classes"
         @click="card.toggleRevealed"
         v-motion
