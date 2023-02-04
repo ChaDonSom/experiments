@@ -1,3 +1,4 @@
+import { useIconsStore } from "@/experiments/memory/icons"
 import { useStorage, watchOnce, whenever } from "@vueuse/core"
 import { defineStore } from "pinia"
 import { ref, computed, type Ref, watch, reactive } from "vue"
@@ -56,7 +57,9 @@ export const cards = computed(() => (new Array(numberOfCards.value)).fill(1).map
 export const shuffledCards = computed(() => [...cards.value].sort((a, b) => Math.random() > 0.5 ? 1 : -1))
 export const revealedCards = computed(() => cards.value.filter(card => card.revealed))
 export const countRevealedCards = computed(() => Object.keys(revealedCards.value).length)
-export function reset() {
+export async function reset() {
+    const icons = useIconsStore()
+    if (display.value == DisplayOption["material-icons"]) await icons.getIcons()
     const carry = numberOfCards.value
     numberOfCards.value = 0
     numberOfCards.value = carry
