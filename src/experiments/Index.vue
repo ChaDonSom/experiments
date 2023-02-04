@@ -1,21 +1,49 @@
 <template>
-  <div class="m-10" ref="mainRef">
+  <div
+      class="m-10"
+      ref="mainRef"
+  >
     <h1 class="text-lg my-5">Experiments</h1>
     <div class="flex flex-wrap gap-10">
-      <RouterLink :to="{ name: 'phaser-tutorial-start' }" @click="loading = true" class="mdc-ripple overflow-hidden">
+      <RouterLink
+          :to="{ name: 'phaser-tutorial-start' }"
+          @click="loading = true"
+          class="mdc-ripple overflow-hidden"
+      >
         <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
           <div class="inline-flex w-12 h-12 items-center justify-center">
-            <img class="object-cover w-8 h-11" src="/images/experiments/phaser-tutorial/dude.png" />
+            <img
+                class="object-cover w-8 h-11"
+                src="/images/experiments/phaser-tutorial/dude.png"
+            />
           </div>
           <h2 class="text-slate-100 text-center">Phaser Tutorial</h2>
         </div>
       </RouterLink>
-      <RouterLink :to="{ name: 'checkers' }" @click="loading = true" class="mdc-ripple overflow-hidden">
+      <RouterLink
+          :to="{ name: 'checkers' }"
+          @click="loading = true"
+          class="mdc-ripple overflow-hidden"
+      >
         <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
           <div class="inline-flex w-12 h-12 items-center justify-center">
-            <img class="object-cover rounded-xl" src="/images/experiments/checkers/checkers-logo.png" />
+            <img
+                class="object-cover rounded-xl"
+                src="/images/experiments/checkers/checkers-logo.png"
+            />
           </div>
           <h2 class="text-slate-100 text-center">Checkers</h2>
+        </div>
+      </RouterLink>
+      <RouterLink
+          :to="{ name: 'memory' }"
+          @click="loading = true"
+          class="mdc-ripple overflow-hidden"
+      >
+        <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
+          <div class="inline-flex w-12 h-12 items-center justify-center">
+          </div>
+          <h2 class="text-slate-100 text-center">Memory</h2>
         </div>
       </RouterLink>
     </div>

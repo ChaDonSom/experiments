@@ -3,6 +3,7 @@ const GameVue = () => import("@/experiments/phaser-tutorial/Game.vue")
 const StartVue = () => import("@/experiments/phaser-tutorial/Start.vue")
 const PhaserTutorial = () => import("@/experiments/phaser-tutorial/PhaserTutorial.vue")
 const Checkers = () => import("@/experiments/checkers/Checkers.vue")
+const Memory = () => import("@/experiments/memory/Memory.vue")
 
 const routes: RouteRecordRaw[] = [
     {
@@ -21,7 +22,13 @@ const routes: RouteRecordRaw[] = [
         children: [
             
         ]
-    }
+    },
+    {
+        name: "memory", path: "/memory", component: Memory, props: true,
+        children: [
+            
+        ]
+    },
 ];
 
 export default routes;

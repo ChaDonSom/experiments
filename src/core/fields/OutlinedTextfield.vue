@@ -31,6 +31,12 @@
                         ($event?.target as HTMLInputElement)?.value
                     )
                 "
+                @change="
+                    $emit(
+                        'change:modelValue',
+                        ($event.target as HTMLInputElement)?.value
+                    )
+                "
             />
         </label>
         <div class="mdc-text-field-helper-line max-w-fit">
@@ -53,6 +59,9 @@
 import { MDCTextField } from "@material/textfield";
 import { computed, onMounted, ref } from "vue";
 
+defineEmits([
+    'update:modelValue', 'change:modelValue',
+])
 const props = defineProps({
     modelValue: [String, Number],
     type: String,
@@ -64,7 +73,7 @@ const props = defineProps({
 })
 
 const bindableAttributes = computed(() => {
-    let result: { [key: string]: any } = {}
+    const result: { [key: string]: any } = {}
     if (props.step) result.step = props.step
     return result
 });

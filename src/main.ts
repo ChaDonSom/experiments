@@ -27,7 +27,8 @@ if (logrocketProject && typeof logrocketProject == "string") {
 }
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
 import { useBeams } from "@/store/beams";
-import { createHead } from "@vueuse/head";
+import { createHead } from "@vueuse/head"
+import { MotionPlugin } from '@vueuse/motion'
 
 const VITE_PUSHER_BEAMS_INSTANCE_ID = import.meta.env
     .VITE_PUSHER_BEAMS_INSTANCE_ID;
@@ -74,4 +75,5 @@ const app = createApp(App)
             },
         },
     })
+    .use(MotionPlugin)
     .mount("#app");
