@@ -39,7 +39,7 @@ const icons = useIconsStore()
     </div>
     <div
         v-else
-        class="h-32 w-20 rounded-xl m-3 text-slate-900 flex items-center justify-center"
+        class="h-32 w-20 rounded-xl m-3 text-slate-900 flex items-center justify-center overflow-hidden"
         :class="classes"
         @click="card.toggleRevealed"
         v-motion
@@ -54,6 +54,7 @@ const icons = useIconsStore()
     >
       <i v-if="display == DisplayOption['material-icons']" class="material-icons">{{ icons.icons[card.value] }}</i>
       <span v-else-if="display == DisplayOption.number">{{ card.value }}</span>
+      <img v-else-if="display == DisplayOption.foxes" :src="`https://randomfox.ca/images/${card.value + 1}.jpg`" class="w-full h-full object-cover" />
     </div>
   </template>
   <template v-else>

@@ -9,9 +9,10 @@
       >
         Number of matches
       </OutlinedTextfield>
-      <OutlinedSelect :label="'Display'" v-model="display" class="mb-20">
+      <OutlinedSelect :label="'Display'" v-model="display" class="mb-32">
         <SelectOption :model-value="DisplayOption.number">Number</SelectOption>
         <SelectOption :model-value="DisplayOption['material-icons']">Material icons</SelectOption>
+        <SelectOption :model-value="DisplayOption['foxes']">Foxes</SelectOption>
       </OutlinedSelect>
       <Button @click="reset()"><template #leading-icon>replay</template>Reset</Button>
       <!-- <p class="my-3 italic">Not implemented yet</p> -->

@@ -50,6 +50,7 @@ export function Card(place: number) {
 export enum DisplayOption {
     'number' = 'number',
     'material-icons' = 'material-icons',
+    'foxes' = 'foxes',
 }
 export const display = useStorage<DisplayOption>('somero-experiments-memory-display', DisplayOption.number)
 export const numberOfCards = useStorage('somero-experiments-memory-number-of-cards', 30)
