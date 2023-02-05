@@ -1,43 +1,42 @@
 <template>
     <div class="m-2 mt-4">
-        <label class="mdc-text-field mdc-text-field--outlined" ref="mainRef">
+        <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea" ref="mainRef">
+            <!-- mdc-text-field--no-label -->
             <span class="mdc-notched-outline">
                 <span class="mdc-notched-outline__leading"></span>
                 <span class="mdc-notched-outline__notch">
                     <span
                         class="mdc-floating-label"
-                        :id="`textfield-label-${id}`"
+                        :id="`textarea-label-${id}`"
                         ><slot
                     /></span>
                 </span>
                 <span class="mdc-notched-outline__trailing"></span>
             </span>
-            <input
-                :id="`textfield-input-${id}`"
-                :type="type ?? 'text'"
-                class="mdc-text-field__input"
-                :aria-labelledby="`textfield-label-${id}`"
-                :value="modelValue"
-                :autofocus="autofocus"
-                v-bind="bindableAttributes"
-                @focus="
-                    autoselect
-                        ? ($event.target as HTMLInputElement).select()
-                        : null
-                "
-                @input="
-                    $emit(
-                        'update:modelValue',
-                        ($event?.target as HTMLInputElement)?.value
-                    )
-                "
-                @change="
-                    $emit(
-                        'change:modelValue',
-                        ($event.target as HTMLInputElement)?.value
-                    )
-                "
-            />
+            <span class="mdc-text-field__resizer">
+                <textarea
+                    :id="`textarea-input-${id}`"
+                    class="mdc-text-field__input"
+                    rows="4"
+                    cols="30"
+                    :aria-labelledby="`textarea-label-${id}`"
+                    :value="modelValue"
+                    :autofocus="autofocus"
+                    v-bind="bindableAttributes"
+                    @focus="
+                        autoselect
+                            ? ($event.target as HTMLInputElement).select()
+                            : null
+                    "
+                    @input="
+                        $emit(
+                            'update:modelValue',
+                            ($event?.target as HTMLInputElement)?.value
+                        )
+                    "
+                ></textarea>
+                    <!-- aria-label="Label" -->
+            </span>
         </label>
         <div class="mdc-text-field-helper-line max-w-fit">
             <div
@@ -59,9 +58,6 @@
 import { MDCTextField } from "@material/textfield";
 import { computed, onMounted, ref } from "vue";
 
-defineEmits([
-    'update:modelValue', 'change:modelValue',
-])
 const props = defineProps({
     modelValue: [String, Number],
     type: String,
@@ -69,12 +65,10 @@ const props = defineProps({
     helper: String,
     autoselect: Boolean,
     autofocus: Boolean,
-    step: [String, Number],
 })
 
 const bindableAttributes = computed(() => {
-    const result: { [key: string]: any } = {}
-    if (props.step) result.step = props.step
+    let result: { [key: string]: any } = {}
     return result
 });
 
@@ -83,7 +77,7 @@ const mainRef = ref<Element | null>(null);
 const mdcTextfield = ref<MDCTextField | null>(null);
 onMounted(() => {
     if (mainRef.value) mdcTextfield.value = new MDCTextField(mainRef.value);
-    if (props.autofocus) mainRef.value?.querySelector("input")?.focus();
+    if (props.autofocus) mainRef.value?.querySelector("textarea")?.focus();
 });
 </script>
 
@@ -98,6 +92,11 @@ onMounted(() => {
 
 .mdc-text-field {
     @include textfield.outline-shape-radius(mdc-theme.$textfield-shape-radius);
+    @if (mdc-theme.$textfield-shape-radius > 4px) {
+        textarea.mdc-text-field__input {
+            padding-inline: 0;
+        }
+    }
     // @include textfield.outlined-density(-4);
     @include textfield.outline-color(var(--color-border));
     @include textfield.label-color(var(--color-text));
