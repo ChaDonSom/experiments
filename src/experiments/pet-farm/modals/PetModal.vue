@@ -8,6 +8,7 @@
       >
         Name
       </OutlinedTextfield>
+      <p>{{ pet.currentAction.name }}</p>
     </div>
   </Modal>
 </template>

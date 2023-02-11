@@ -30,7 +30,6 @@ function newPet() {
     <div class="fixed flex items-center justify-center bottom-2 z-10">
       <IconButton @click="openSettingsModal">settings</IconButton>
     </div>
-    <!-- <div class="h-12 w-12 rounded-full fixed bg-green-600" :style="{ top: `${y}px`, left: `${x}px` }"></div> -->
     <Pet v-for="pet of pets" :key="pet.uid" :pet="pet" />
   </div>
 </template>
