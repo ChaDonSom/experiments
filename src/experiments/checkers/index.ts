@@ -142,6 +142,7 @@ export const score = useLocalStorage('experiments-checkers-score-v1', {
 export const winning = computed(() => {
     if (score.value.black > score.value.red) return 'black'
     if (score.value.red > score.value.black) return 'red'
+    else return null
 })
 
 watch(

@@ -105,12 +105,16 @@ watch(
           // If forceJumps && another jump is available, keep current player
 
           // If not forceJumps, and allowMultipleJumps, and another jump is available... the game must hand the turn management over to the players
-          // Unless we count it by the 'onMove' of the sortables
+          // Unless we count it by the 'onMove' of the sortables vvv
           
           checkersSettings.value.activePlayer = checkersSettings.value.activePlayer == 'black' ? 'red' : 'black'
         },
         onRemove(event) {
           delete piecesCurrentPlaces.value[id.value]
+        },
+        onMove(evt) {
+          // See if there are any _more_ jumps to move. If so, add them to .availableJumps now,
+          // also remove them if we move to a different place
         }
       })
     }
