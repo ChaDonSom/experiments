@@ -71,7 +71,7 @@ export function usePet(uid: number) {
         const movementInterval = setInterval(() => {
             requestAnimationFrame(async () => {
                 if (workerStatus.value == 'RUNNING') return
-                position.value = await updatePosition(anotherToVisit.position.x, anotherToVisit.position.y, friendliness.value)
+                position.value = await updatePosition(anotherToVisit.transition[0], anotherToVisit.transition[1], friendliness.value)
             })
         }, 1000)
         function stop() { clearInterval(movementInterval) }
