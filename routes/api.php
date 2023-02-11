@@ -71,3 +71,10 @@ Route::get('/phaser-tutorial/leaderboard', function (Request $request) {
         ]
     ];
 });
+
+Route::prefix('pet-farm')->group(function () {
+    Route::get('name', function () {
+        $faker = \Faker\Factory::create();
+        return $faker->name;
+    });
+});
