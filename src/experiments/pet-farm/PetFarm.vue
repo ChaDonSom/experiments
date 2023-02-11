@@ -18,7 +18,7 @@ function uuid() {
   return x
 }
 function newPet() {
-  if (Object.keys(pets.value).length > 1) return
+  if (Object.keys(pets.value).length >= 10) return
   const uid = uuid()
   pets.value[uid] = usePet(uid)
 }
