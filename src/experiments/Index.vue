@@ -46,6 +46,17 @@
           </div>
           <h2 class="text-slate-100 text-center">Memory</h2>
         </div>
+      </RouterLink><RouterLink
+          :to="{ name: 'pet-farm' }"
+          @click="loading = true"
+          class="mdc-ripple overflow-hidden"
+      >
+        <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
+          <div class="inline-flex w-12 h-12 items-center justify-center text-slate-100">
+            <i class="material-icons">lightbulb</i>
+          </div>
+          <h2 class="text-slate-100 text-center">Pet farm</h2>
+        </div>
       </RouterLink>
     </div>
     <CircularScrim :loading="loading" />
