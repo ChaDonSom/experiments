@@ -87,9 +87,23 @@ export function usePet(uid: number) {
             done,
         })
     }
+    function hungry() {
+        function stop() {
+            done.value = true
+            currentAction.value = pickRandomAction()()
+        }
+        const done = ref(false)
+
+        return reactive({
+            name: `Hungry`,
+            stop,
+            done,
+        })
+    }
     const actions: (() => { name: string, stop: () => void, done: boolean })[] = [
         exploreRandomly,
         visitAnother,
+        hungry,
     ]
     const currentAction = ref(pickRandomAction()())
     function pickRandomAction() {

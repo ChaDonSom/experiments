@@ -9,6 +9,10 @@
         Name
       </OutlinedTextfield>
       <p>{{ pet.currentAction.name }}</p>
+      <IconButton
+          v-if="pet.currentAction.name == 'Hungry' && !pet.currentAction.done"
+          @click="pet.currentAction.stop"
+      >restaurant</IconButton>
     </div>
   </Modal>
 </template>
@@ -24,6 +28,7 @@ import OutlinedSelect from '@/core/selects/OutlinedSelect.vue'
 import SelectOption from '@/core/selects/SelectOption.vue'
 import { pets } from '@/experiments/pet-farm'
 import { computed } from 'vue'
+import IconButton from '@/core/buttons/IconButton.vue'
 
 const props = defineProps({
   id: {
