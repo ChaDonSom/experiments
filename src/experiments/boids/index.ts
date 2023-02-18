@@ -55,10 +55,10 @@ export function usePet(uid: number) {
     const rightward = computed(() => degrees(direction.value) + 45)
     const rearRight = computed(() => degrees(direction.value) + 135)
     const rearLeft = computed(() => degrees(direction.value) - 135)
-    const leftFeeler = computed(() => ({ x: position.value.x + (vector(radians(leftward.value)).x * distance), y: position.value.y + (vector(radians(leftward.value)).y * distance) }))
-    const rightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rightward.value)).x * distance), y: position.value.y + (vector(radians(rightward.value)).y * distance) }))
-    const rearRightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearRight.value)).x * distance), y: position.value.y + (vector(radians(rearRight.value)).y * distance) }))
-    const rearLeftFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearLeft.value)).x * distance), y: position.value.y + (vector(radians(rearLeft.value)).y * distance) }))
+    // const leftFeeler = computed(() => ({ x: position.value.x + (vector(radians(leftward.value)).x * distance), y: position.value.y + (vector(radians(leftward.value)).y * distance) }))
+    // const rightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rightward.value)).x * distance), y: position.value.y + (vector(radians(rightward.value)).y * distance) }))
+    // const rearRightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearRight.value)).x * distance), y: position.value.y + (vector(radians(rearRight.value)).y * distance) }))
+    // const rearLeftFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearLeft.value)).x * distance), y: position.value.y + (vector(radians(rearLeft.value)).y * distance) }))
 
     function showModal() {
         modals.open({ modal: markRaw(PetModal), props: { uid } })
@@ -79,14 +79,14 @@ export function usePet(uid: number) {
         showModal,
         leftward,
         rightward,
-        leftFeeler,
-        rightFeeler,
+        // leftFeeler,
+        // rightFeeler,
         momentum,
         movementModifier,
         rearRight,
         rearLeft,
-        rearRightFeeler,
-        rearLeftFeeler,
+        // rearRightFeeler,
+        // rearLeftFeeler,
         feelerRadius,
     })
 }

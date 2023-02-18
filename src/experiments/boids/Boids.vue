@@ -29,28 +29,6 @@ reset()
             :x1="pet.position.x" :y1="pet.position.y" :x2="pet.pInDirection.x" :y2="pet.pInDirection.y" stroke="red"
         />
       </template>
-      <!-- Front feelers -->
-      <template v-if="settings.debugFrontFeelers">
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.leftFeeler.x" :cy="pet.leftFeeler.y" stroke="orange" fill-opacity="0"
-        />
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rightFeeler.x" :cy="pet.rightFeeler.y" stroke="orange" fill-opacity="0"
-        />
-      </template>
-      <!-- Back feelers -->
-      <template v-if="settings.debugBackFeelers">
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rearLeftFeeler.x" :cy="pet.rearLeftFeeler.y" stroke="blue" fill-opacity="0"
-        />
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rearRightFeeler.x" :cy="pet.rearRightFeeler.y" stroke="blue" fill-opacity="0"
-        />
-      </template>
       <template v-if="settings.debugTooCloseTooFar">
         <circle
             v-for="pet of pets" :key="pet.uid"

@@ -29,6 +29,8 @@ import SelectOption from '@/core/selects/SelectOption.vue'
 import { pets } from '@/experiments/pet-farm'
 import { computed } from 'vue'
 import IconButton from '@/core/buttons/IconButton.vue'
+import { onMounted } from 'vue'
+import { until, watchOnce, whenever } from '@vueuse/core'
 
 const props = defineProps({
   id: {
@@ -44,4 +46,11 @@ const props = defineProps({
 const pet = computed(() => pets.value[props.uid])
 
 const modals = useModals()
+
+onMounted(async () => {
+  await until(() => pet.value)
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(pet.value.name))
+  }
+})
 </script>
