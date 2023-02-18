@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useModals } from '@/store/modals'
 import { computed, markRaw, onMounted, reactive, ref } from 'vue'
-import SettingsModal from '@/experiments/pet-farm/modals/SettingsModal.vue'
+import SettingsModal from '@/experiments/boids/modals/SettingsModal.vue'
 import IconButton from '@/core/buttons/IconButton.vue'
-import { newPet, pets, reset, settings, usePet, uuid } from '@/experiments/pet-farm'
-import Pet from '@/experiments/pet-farm/Pet.vue'
+import { newPet, pets, reset, settings, usePet, uuid } from '@/experiments/boids'
+import Pet from '@/experiments/boids/Boid.vue'
 
 const modals = useModals()
 function openSettingsModal() {

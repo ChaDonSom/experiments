@@ -20,7 +20,7 @@ import Button from '@/core/buttons/Button.vue'
 import OutlinedTextfield from '@/core/fields/OutlinedTextfield.vue'
 import OutlinedSelect from '@/core/selects/OutlinedSelect.vue'
 import SelectOption from '@/core/selects/SelectOption.vue'
-import { reset, settings } from '@/experiments/pet-farm'
+import { reset, settings } from '@/experiments/boids'
 
 const props = defineProps({
   id: {
