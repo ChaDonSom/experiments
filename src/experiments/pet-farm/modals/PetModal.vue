@@ -8,11 +8,11 @@
       >
         Name
       </OutlinedTextfield>
-      <!-- <p>{{ pet.currentAction.name }}</p> -->
-      <!-- <IconButton
+      <p>{{ pet.currentAction.name }}</p>
+      <IconButton
           v-if="pet.currentAction.name == 'Hungry' && !pet.currentAction.done"
           @click="pet.currentAction.stop"
-      >restaurant</IconButton> -->
+      >restaurant</IconButton>
     </div>
   </Modal>
 </template>

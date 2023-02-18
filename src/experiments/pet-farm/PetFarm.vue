@@ -3,7 +3,7 @@ import { useModals } from '@/store/modals'
 import { computed, markRaw, onMounted, reactive, ref } from 'vue'
 import SettingsModal from '@/experiments/pet-farm/modals/SettingsModal.vue'
 import IconButton from '@/core/buttons/IconButton.vue'
-import { newPet, pets, reset, settings, usePet, uuid } from '@/experiments/pet-farm'
+import { pets, usePet } from '@/experiments/pet-farm'
 import Pet from '@/experiments/pet-farm/Pet.vue'
 
 const modals = useModals()
@@ -11,104 +11,25 @@ function openSettingsModal() {
   modals.open({ modal: markRaw(SettingsModal) })
 }
 
-reset()
+let _uuid = 0
+function uuid() {
+  const x = _uuid
+  _uuid++
+  return x
+}
+function newPet() {
+  if (Object.keys(pets.value).length >= 10) return
+  const uid = uuid()
+  pets.value[uid] = usePet(uid)
+}
+
 </script>
 
 <template>
-  <div class="h-screen w-screen">
+  <div class="h-screen w-screen" @click="newPet">
     <div class="fixed flex items-center justify-center bottom-2 z-10">
-      <IconButton @click="reset()">replay</IconButton>
-      <IconButton @click="openSettingsModal()">settings</IconButton>
+      <IconButton @click="openSettingsModal">settings</IconButton>
     </div>
     <Pet v-for="pet of pets" :key="pet.uid" :pet="pet" />
-    <svg style="position: fixed; width: 100vw; height: 100vh;">
-      <template v-if="settings.debugDirection">
-        <line
-            v-for="pet of pets"
-            :key="pet.uid"
-            :x1="pet.position.x" :y1="pet.position.y" :x2="pet.pInDirection.x" :y2="pet.pInDirection.y" stroke="red"
-        />
-      </template>
-      <!-- Front feelers -->
-      <template v-if="settings.debugFrontFeelers">
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.leftFeeler.x" :cy="pet.leftFeeler.y" stroke="orange" fill-opacity="0"
-        />
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rightFeeler.x" :cy="pet.rightFeeler.y" stroke="orange" fill-opacity="0"
-        />
-      </template>
-      <!-- Back feelers -->
-      <template v-if="settings.debugBackFeelers">
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rearLeftFeeler.x" :cy="pet.rearLeftFeeler.y" stroke="blue" fill-opacity="0"
-        />
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :r="pet.feelerRadius" :cx="pet.rearRightFeeler.x" :cy="pet.rearRightFeeler.y" stroke="blue" fill-opacity="0"
-        />
-      </template>
-      <template v-if="settings.debugTooCloseTooFar">
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :cx="pet.position.x" :cy="pet.position.y" :r="pet.tooClose" stroke="red" fill-opacity="0"
-        />
-        <circle
-            v-for="pet of pets" :key="pet.uid"
-            :cx="pet.position.x" :cy="pet.position.y" :r="pet.tooFar" stroke="pink" fill-opacity="0"
-        />
-      </template>
-    </svg>
-    <!-- <div
-            v-for="pet of pets"
-            :key="pet.uid"
-      class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-      :style="{ transform: `translateX(${pet.leftCorners.topLeft.x}px) translateY(${pet.leftCorners.topLeft.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-      class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-      :style="{ transform: `translateX(${pet.leftCorners.topLeft.x}px) translateY(${pet.leftCorners.bottomRight.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-        class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-        :style="{ transform: `translateX(${pet.leftCorners.bottomRight.x}px) translateY(${pet.leftCorners.bottomRight.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-        class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-        :style="{ transform: `translateX(${pet.leftCorners.bottomRight.x}px) translateY(${pet.leftCorners.topLeft.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-      class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-      :style="{ transform: `translateX(${pet.rightCorners.topLeft.x}px) translateY(${pet.rightCorners.topLeft.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-      class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-      :style="{ transform: `translateX(${pet.rightCorners.topLeft.x}px) translateY(${pet.rightCorners.bottomRight.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-        class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-        :style="{ transform: `translateX(${pet.rightCorners.bottomRight.x}px) translateY(${pet.rightCorners.bottomRight.y}px)` }"
-    ></div>
-    <div
-            v-for="pet of pets"
-            :key="pet.uid"
-        class="h-2 w-2 rounded-full fixed top-0 left-0 bg-orange-500"
-        :style="{ transform: `translateX(${pet.rightCorners.bottomRight.x}px) translateY(${pet.rightCorners.topLeft.y}px)` }"
-    ></div> -->
   </div>
 </template>
