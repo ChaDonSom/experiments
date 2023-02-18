@@ -46,7 +46,8 @@
           </div>
           <h2 class="text-slate-100 text-center">Memory</h2>
         </div>
-      </RouterLink><RouterLink
+      </RouterLink>
+      <RouterLink
           :to="{ name: 'pet-farm' }"
           @click="loading = true"
           class="mdc-ripple overflow-hidden"
@@ -59,6 +60,21 @@
             />
           </div>
           <h2 class="text-slate-100 text-center">Pet farm</h2>
+        </div>
+      </RouterLink>
+      <RouterLink
+          :to="{ name: 'boids' }"
+          @click="loading = true"
+          class="mdc-ripple overflow-hidden"
+      >
+        <div class="inline-flex flex-col bg-slate-500 rounded-xl items-center justify-center p-3">
+          <div class="inline-flex w-12 h-12 items-center justify-center text-slate-100">
+            <img
+                class="object-cover rounded-xl"
+                src="https://api.dicebear.com/5.x/fun-emoji/svg?seed=doufgsadfz`&radius=50"
+            />
+          </div>
+          <h2 class="text-slate-100 text-center">Boids</h2>
         </div>
       </RouterLink>
     </div>
@@ -80,7 +96,7 @@ watch(
   () => mainRef.value,
   () => {
     if (mainRef.value) {
-      let ripples = mainRef.value.querySelectorAll('.mdc-ripple')
+      const ripples = mainRef.value.querySelectorAll('.mdc-ripple')
       ripples.forEach(ripple => new MDCRipple(ripple))
     }
   }

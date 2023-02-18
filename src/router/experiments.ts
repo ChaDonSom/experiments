@@ -5,6 +5,7 @@ const PhaserTutorial = () => import("@/experiments/phaser-tutorial/PhaserTutoria
 const Checkers = () => import("@/experiments/checkers/Checkers.vue")
 const Memory = () => import("@/experiments/memory/Memory.vue")
 const PetFarm = () => import("@/experiments/pet-farm/PetFarm.vue")
+const Boids = () => import("@/experiments/boids/Boids.vue")
 
 const routes: RouteRecordRaw[] = [
     {
@@ -29,6 +30,10 @@ const routes: RouteRecordRaw[] = [
     {
         name: "pet-farm", path: "/pet-farm", component: PetFarm, props: true,
         children: [ ]
+    },
+    {
+        name: "boids", path: "/boids", component: Boids, props: true,
+        children: []
     },
 ];
 
