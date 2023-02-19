@@ -29,6 +29,13 @@ reset()
             :x1="pet.position.x" :y1="pet.position.y" :x2="pet.pInDirection.x" :y2="pet.pInDirection.y" stroke="red"
         />
       </template>
+      <template v-if="settings.debugOthersDirection">
+        <line
+            v-for="pet of pets"
+            :key="pet.uid"
+            :x1="pet.position.x" :y1="pet.position.y" :x2="pet.pInOthersDirection.x" :y2="pet.pInOthersDirection.y" stroke="green"
+        />
+      </template>
       <template v-if="settings.debugTooCloseTooFar">
         <circle
             v-for="pet of pets" :key="pet.uid"
@@ -37,6 +44,12 @@ reset()
         <circle
             v-for="pet of pets" :key="pet.uid"
             :cx="pet.position.x" :cy="pet.position.y" :r="pet.tooFar" stroke="pink" fill-opacity="0"
+        />
+      </template>
+      <template v-if="settings.debugOthersPosition">
+        <circle
+            v-for="pet of pets" :key="pet.uid"
+            :cx="pet.averageOthersPosition.x" :cy="pet.averageOthersPosition.y" :r="3"
         />
       </template>
     </svg>

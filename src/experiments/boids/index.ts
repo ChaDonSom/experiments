@@ -11,6 +11,8 @@ export const settings = useLocalStorage('somero-experiments-pet-farm-settings', 
     debugFrontFeelers: false,
     debugBackFeelers: false,
     debugTooCloseTooFar: false,
+    debugOthersDirection: false,
+    debugOthersPosition: false,
 })
 
 let _uuid = 0
@@ -55,10 +57,6 @@ export function usePet(uid: number) {
     const rightward = computed(() => degrees(direction.value) + 45)
     const rearRight = computed(() => degrees(direction.value) + 135)
     const rearLeft = computed(() => degrees(direction.value) - 135)
-    // const leftFeeler = computed(() => ({ x: position.value.x + (vector(radians(leftward.value)).x * distance), y: position.value.y + (vector(radians(leftward.value)).y * distance) }))
-    // const rightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rightward.value)).x * distance), y: position.value.y + (vector(radians(rightward.value)).y * distance) }))
-    // const rearRightFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearRight.value)).x * distance), y: position.value.y + (vector(radians(rearRight.value)).y * distance) }))
-    // const rearLeftFeeler = computed(() => ({ x: position.value.x + (vector(radians(rearLeft.value)).x * distance), y: position.value.y + (vector(radians(rearLeft.value)).y * distance) }))
 
     function showModal() {
         modals.open({ modal: markRaw(PetModal), props: { uid } })
@@ -66,6 +64,9 @@ export function usePet(uid: number) {
 
     const tooClose = 30
     const tooFar = 90
+
+    const averageOthersDirection = ref({ x: 0, y: 0 })
+    const averageOthersPosition  = ref({ x: 0, y: 0 })
 
     return reactive({
         uid,
@@ -75,18 +76,17 @@ export function usePet(uid: number) {
         direction,
         tooClose,
         tooFar,
+        averageOthersDirection,
+        averageOthersPosition,
         pInDirection: computed(() => ({ x: position.value.x + (direction.value.x * 20), y: position.value.y + (direction.value.y * 20) })),
+        pInOthersDirection: computed(() => ({ x: position.value.x + (averageOthersDirection.value.x * 20), y: position.value.y + (averageOthersDirection.value.y * 20) })),
         showModal,
         leftward,
         rightward,
-        // leftFeeler,
-        // rightFeeler,
         momentum,
         movementModifier,
         rearRight,
         rearLeft,
-        // rearRightFeeler,
-        // rearLeftFeeler,
         feelerRadius,
     })
 }
@@ -111,12 +111,41 @@ const movementInterval = () => {
             if (pointIsInRadius(otherPet.position, pet.position, pet.tooFar)) others.push(otherPet)
         }
 
+        /**
+         * 1. separation: avoid crowding local flockmates
+         *      ??? away from average position?
+         * 2. alignment: steer toward average heading of local flockmates
+         * 3. cohesion: steer toward average position (center of mass) of local flockmates
+         */
+
         const totalOthersPosition = others.reduce((acc, curr) => {
             acc.x += curr.position.x
             acc.y += curr.position.y
             return acc
         }, { x: 0, y: 0 })
-        const averageOthersPosition = { x: totalOthersPosition.x / others.length, y: totalOthersPosition.y / others.length }
+        pet.averageOthersPosition.x = totalOthersPosition.x / others.length
+        pet.averageOthersPosition.y = totalOthersPosition.y / others.length
+
+        const closestDistance = others.reduce((acc, curr) => {
+            const d = distance(pet.position, curr.position)
+            if (d < acc) acc = d
+            return acc
+        }, 1000)
+
+        const totalOthersDirection = others.reduce((acc, curr) => {
+            acc.x += curr.direction.x
+            acc.y += curr.direction.y
+            return acc
+        }, { x: 0, y: 0 })
+        pet.averageOthersDirection.x = totalOthersDirection.x / others.length
+        pet.averageOthersDirection.y = totalOthersDirection.y / others.length
+
+        if (!others.length) {
+            pet.averageOthersDirection.x = pet.direction.x
+            pet.averageOthersDirection.y = pet.direction.y
+            pet.averageOthersPosition.x = pet.position.x
+            pet.averageOthersPosition.y = pet.position.y
+        }
 
         const othersInFront = []
         for (const otherPet of others) {
@@ -140,21 +169,36 @@ const movementInterval = () => {
         }, { x: 0, y: 0 })
         const averageOthersInFrontDirection = { x: totalOthersInFrontDirection.x / othersInFront.length, y: totalOthersInFrontDirection.y / othersInFront.length }
 
-        const distToOthersInFront = distance(pet.position, averageOthersInFrontPosition)
-        if (othersInFront.length && distToOthersInFront >= pet.tooClose && distToOthersInFront < pet.tooFar) {
-            const towardThem = degrees(direction(pet.position, averageOthersInFrontPosition))
+        // Cohesion
+        const distToOthers = distance(pet.position, pet.averageOthersPosition)
+        if (others.length && distToOthers >= pet.tooClose && distToOthers < pet.tooFar && closestDistance > pet.tooClose) {
+            const towardThem = degrees(direction(pet.position, pet.averageOthersPosition))
             const towardThemDifference = towardThem - degrees(pet.direction)
-            const directionDifference = degrees(averageOthersInFrontDirection) - degrees(pet.direction)
-            nudge += (directionDifference * 0.1) + (towardThemDifference * 0.1)
+            nudge += (towardThemDifference * 0.1)
+        }
+
+        // Alignment
+        if (others.length && distToOthers >= pet.tooClose && distToOthers < pet.tooFar) {
+            const directionDifference = degrees(pet.averageOthersDirection) - degrees(pet.direction)
+            nudge += (directionDifference * 0.1)
+        }
+
+        // Separation
+        if (others.length && closestDistance <= pet.tooClose) {
+            const awayFromThem = (360 + degrees(direction(pet.position, pet.averageOthersPosition)) - 180) % 360 // always counter-clockwise (to the left) and too fast
+            const awayFromThemDifference = awayFromThem - degrees(pet.direction)
+            nudge += (awayFromThemDifference * 0.05)
         }
 
         // If directions are close enough to each other, speed up to get closer to one that's ahead, slow down 
         // to get further away from one that's ahead.
+        const distToOthersInFront = distance(pet.position, averageOthersInFrontPosition)
         const aligned = ((360 + (degrees(averageOthersInFrontDirection) - degrees(pet.direction))) % 360) < 45
-        if (distToOthersInFront < pet.tooClose) pet.momentum -= 0.1
-        if (aligned && distToOthersInFront >= pet.tooClose && distToOthersInFront < pet.tooFar) pet.momentum += 0.1
+        const othersMomentum = others.reduce((acc, curr) => acc + curr.momentum, 0) / others.length
+        if (aligned && othersMomentum < pet.momentum) pet.momentum -= ((othersMomentum - pet.momentum) * 0.1)
+        if (aligned && distToOthersInFront >= pet.tooClose && distToOthersInFront < pet.tooFar && othersMomentum > pet.momentum) pet.momentum += ((othersMomentum - pet.momentum) * 0.1)
 
-        if (!othersInFront.length) pet.momentum -= 0.1
+        if (!othersInFront.length) pet.momentum += (Math.random() - 0.7)
         const minimumMomentum = 1
         if (!othersInFront.length && pet.momentum < minimumMomentum) pet.momentum = minimumMomentum
 
