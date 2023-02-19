@@ -63,7 +63,7 @@ export function usePet(uid: number) {
     }
 
     const tooClose = 30
-    const tooFar = 90
+    const tooFar = 120
 
     const averageOthersDirection = ref({ x: 0, y: 0 })
     const averageOthersPosition  = ref({ x: 0, y: 0 })
@@ -195,8 +195,8 @@ const movementInterval = () => {
         const distToOthersInFront = distance(pet.position, averageOthersInFrontPosition)
         const aligned = ((360 + (degrees(averageOthersInFrontDirection) - degrees(pet.direction))) % 360) < 45
         const othersMomentum = others.reduce((acc, curr) => acc + curr.momentum, 0) / others.length
-        if (aligned && othersMomentum < pet.momentum) pet.momentum -= ((othersMomentum - pet.momentum) * 0.1)
-        if (aligned && distToOthersInFront >= pet.tooClose && distToOthersInFront < pet.tooFar && othersMomentum > pet.momentum) pet.momentum += ((othersMomentum - pet.momentum) * 0.1)
+        if (aligned && othersMomentum < pet.momentum && distToOthersInFront < pet.tooFar) pet.momentum -= ((pet.momentum - othersMomentum) * 0.1)
+        if (aligned && othersMomentum > pet.momentum && distToOthersInFront < pet.tooFar) pet.momentum += ((othersMomentum - pet.momentum) * 0.1)
 
         if (!othersInFront.length) pet.momentum += (Math.random() - 0.7)
         const minimumMomentum = 1
