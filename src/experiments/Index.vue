@@ -78,7 +78,7 @@
         </div>
       </RouterLink>
       <a
-          href="https://experiments.somero.dev"
+          href="https://coffee-island.somero.dev"
           @click="loading = true"
           class="mdc-ripple overflow-hidden"
       >
